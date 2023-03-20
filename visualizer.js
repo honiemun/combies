@@ -15,7 +15,7 @@ fetch("nominees.json")
         selectedData.answers.forEach((answer, index) => {
             var video = answer.video ? `<video src='${answer.video}' class="card-video" id="video-${normalizeName(answer.name)}" />` : ``
             cards += `
-            <div class="col col-4 base-card" id="base-card-${normalizeName(answer.name)}">
+            <div class="col col-xs-8 col-lg-4 base-card" id="base-card-${normalizeName(answer.name)}">
                 <div class="card" id="card-${normalizeName(answer.name)}">
                     <div class="card-text">
                         <h5 class="card-owners">${answer.owners || ""}</h5>
