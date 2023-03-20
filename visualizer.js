@@ -1,15 +1,23 @@
 const colorThief = new ColorThief()
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+
+// GENERATE RANDOM
+var random
+fetch("nominees.json")
+    .then(Response => Response.json())
+    .then(data => {
+        random = randomIntFromInterval(0, data.length - 1)
+    }
+)
 
 fetch("nominees.json")
     .then(Response => Response.json())
     .then(data => {
+        var selectedData = fetchSelected(data)
 
-        // CARDS FOR EACH ELEMENT
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        
-        var selectedData = urlParams.get("slide") ? data.find(el => el.code === urlParams.get("slide")) : data[randomIntFromInterval(0, data.length - 1)]
         document.getElementById("content").textContent = selectedData.name;
+        document.getElementById("font-loading").textContent = selectedData.name;
 
         var cards = '';
         selectedData.answers.forEach((answer, index) => {
@@ -66,44 +74,72 @@ fetch("nominees.json")
                 counter += 1;
             }
         }
-
-        // ANIMATE SCROLL
-        var cardScroll = document.getElementById("cardHolder");
-        var timeout = 0
-
-        selectedData.answers.forEach((answer, index) => {
-            // TO-DO: Figure out how to play the whole video
-            
-            setTimeout( () =>{
-                const currentCard = document.getElementById("base-card-" + normalizeName(answer.name));
-                currentCard.style.filter = "brightness(100%)";
-                currentCard.style.transform = "scale(1.05, 1.05)";
-
-                const oldCard = document.getElementById("base-card-" + normalizeName(selectedData.answers[index - 1].name));
-                oldCard.style.filter = "brightness(50%)";
-                oldCard.style.transform = "scale(1, 1)";
-                
-                if (answer.video) {
-                    const image = document.getElementById("image-" + normalizeName(answer.name));
-                    const video = document.getElementById("video-" + normalizeName(answer.name));
-                    image.classList.add("vanish");
-                    video.classList.add("unvanish");
-                    video.play();
-                } else {
-                    cardScroll.scrollLeft += currentCard.clientWidth;
-                }
-            }, timeout);
-            
-            timeout += 5000
-        });
     });
 
-    // HELPER FUNCTIONS
-    
-    function randomIntFromInterval(min, max) { // min and max included 
-        return Math.floor(Math.random() * (max - min + 1) + min)
+// LOAD PAGE
+document.addEventListener("DOMContentLoaded", function() {
+    if (urlParams.get("auto") == "true") {
+        fadeIn();
+        animateScroll();
     }
+});
 
-    function normalizeName (name) {
-        return name.replace( / +/g, '-');
-    }
+document.body.addEventListener('click', function() {
+    fadeIn();
+    animateScroll();
+});
+
+function fadeIn () {
+    document.getElementById("overlay-black").style.animation = "fadeIn 0.5s ease-in forwards";
+}
+
+function animateScroll () {
+    fetch("nominees.json")
+        .then(Response => Response.json())
+        .then(data => {
+            var selectedData = fetchSelected(data)
+
+            // ANIMATE SCROLL
+            var cardScroll = document.getElementById("cardHolder");
+            var timeout = 0
+
+            selectedData.answers.forEach((answer, index) => {
+                setTimeout( () =>{
+                    const currentCard = document.getElementById("base-card-" + normalizeName(answer.name));
+                    console.log("base-card-" + normalizeName(answer.name))
+                    currentCard.style.filter = "brightness(100%)";
+                    currentCard.style.transform = "scale(1.05, 1.05)";
+
+                    const oldCard = document.getElementById("base-card-" + normalizeName(selectedData.answers[index - 1].name));
+                    oldCard.style.filter = "brightness(50%)";
+                    oldCard.style.transform = "scale(1, 1)";
+                    
+                    if (answer.video) {
+                        const image = document.getElementById("image-" + normalizeName(answer.name));
+                        const video = document.getElementById("video-" + normalizeName(answer.name));
+                        image.classList.add("vanish");
+                        video.classList.add("unvanish");
+                        video.play();
+                    } else {
+                        cardScroll.scrollLeft += currentCard.clientWidth;
+                    }
+                }, timeout);
+                
+                timeout += 5000
+            });
+        });
+}
+
+// HELPER FUNCTIONS
+
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function normalizeName (name) {
+    return name.replace( / +/g, '-');
+}
+
+function fetchSelected (data) {
+    return urlParams.get("slide") ? data.find(el => el.code === urlParams.get("slide")) : data[random]
+}
