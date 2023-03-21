@@ -94,7 +94,7 @@ document.body.addEventListener('click', function() {
 });
 
 function fadeIn () {
-    document.getElementById("overlay-black").style.animation = "fadeIn 0.5s ease-in forwards";
+    document.getElementById("overlay").style.animation = "fadeIn 0.5s ease-in forwards";
 }
 
 function animateScroll () {
@@ -127,9 +127,20 @@ function animateScroll () {
                     } else {
                         cardScroll.scrollLeft += currentCard.clientWidth;
                     }
+
+                    // LEAVE PAGE
+                    // Disgusting code. Oh well
+                    if (index == selectedData.answers.length - 1) {
+                        setTimeout(() => {
+                            document.getElementById("overlay-black").style.animation = "fadeOut 0.5s ease-out forwards";
+                            setTimeout(() => {
+                                window.location.href = "winners.html?slide=" + selectedData.code;
+                            }, 500);
+                        }, 4000);
+                    }
                 }, timeout);
                 
-                timeout += 5000
+                timeout += 4000
             });
         });
 }
