@@ -136,6 +136,47 @@ function playSoundEffect(soundEffect) {
     audio.play();
 }
 
+
+function displayWinnersScreen(category) {
+
+    // GET FIRST PLACE WINNERS
+    let firstPlaceWinners = [{ "votes": 0 }]
+    let firstPlaceNames = []
+    category.answers.forEach(answer => {
+        if (answer.votes > firstPlaceWinners[0].votes) {
+            firstPlaceWinners = [answer]
+            firstPlaceNames = [answer.name]
+        } else if (answer.votes == firstPlaceWinners[0].votes) {
+            firstPlaceWinners.push(answer)
+            firstPlaceNames.push(answer.name)
+        }
+    });
+
+    const winner = document.getElementById("winner");
+    const winnerText = document.getElementById("winnerText");
+    const winnerWrapper = document.getElementById("winnerWrapper");
+    const winnerHeader = document.getElementById("winnerHeader");
+
+    // TRANSITIONS
+    winnerHeader.innerHTML = firstPlaceNames.join(", ")
+    winner.style.opacity = 1;
+    setTimeout( () =>{
+        window.requestAnimationFrame(function(){
+            winnerWrapper.style.animation = "skewWinner .8s ease-in-out forwards;"
+        });
+    }, 800);
+
+    // BACKGROUND IMAGE
+    winner.style.background = 'url(' + firstPlaceWinners[0].image + ')';
+    winner.style.backgroundRepeat = "no-repeat";
+    winner.style.backgroundSize = "cover";
+    winner.style.backgroundPosition = "center";
+
+    // RESIZE TEXT / WINNER[S]
+    if (firstPlaceWinners.length >= 3) { winnerHeader.style.fontSize = "6vw" }
+    if (firstPlaceWinners.length > 1) { winnerText.innerHTML = "WINNERS" }
+}
+
 document.body.addEventListener('click', function() {
     if (!hasStarted) {
         startAnimation();
@@ -195,6 +236,9 @@ function startAnimation() {
                     firstPlace)
                 playSoundEffect("../sounds/rise-3.mp3")
             }, 5000);
+            setTimeout( () =>{
+                displayWinnersScreen(selectedData);
+            }, 8000);
         });
     });
 }
