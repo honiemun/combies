@@ -3,11 +3,11 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var hasStarted = false
 
-// GENERATE RANDOM
 var random
 fetch("nominees.json")
     .then(Response => Response.json())
     .then(data => {
+        // GENERATE RANDOM
         random = randomIntFromInterval(0, data.length - 1)
     }
 )
@@ -16,15 +16,16 @@ fetch("nominees.json")
     .then(Response => Response.json())
     .then(data => {
         var selectedData = fetchSelected(data)
+        // RESIZE IF TOO MANY OPTIONS
 
-        //document.getElementById("content").textContent = selectedData.name;
+        document.getElementById("category").textContent = selectedData.name;
 
         var sliders = '';
         selectedData.answers.forEach((answer, index) => {
             sliders += `
             <div class="slider" id="slider-${normalizeName(answer.name)}">
                 <span class="slider-progress" id="slider-progress-${normalizeName(answer.name)}">.</span>
-                <h1 class="slider-header">${answer.name}</h1>
+                <h1 class="slider-header" id="slider-header-${normalizeName(answer.name)}">${answer.name}</h1>
                 <h2 class="slider-percentage" id="slider-percentage-${normalizeName(answer.name)}">0</h2><span class="slider-percentage">%</span>
             </div>
             `;
@@ -50,8 +51,24 @@ fetch("nominees.json")
         selectedData.answers.forEach((answer, index) => {
 
             const slider = document.getElementById("slider-" + normalizeName(answer.name));
+            const sliderHeader = document.getElementById("slider-header-" + normalizeName(answer.name));
             const sliderProgress = document.getElementById("slider-progress-" + normalizeName(answer.name));
             const sliderPercentage = document.getElementById("slider-percentage-" + normalizeName(answer.name));
+
+            // RESIZE DEPENDING ON AMOUNT OF ITEMS
+            
+            if (selectedData.answers.length > 8) {
+                sliderHeader.style.fontSize = "22px";
+                sliderPercentage.style.fontSize = "18px";
+            }
+            if (selectedData.answers.length > 12) {
+                sliderHeader.style.fontSize = "18px";
+                sliderPercentage.style.fontSize = "14px";
+            }
+            if (selectedData.answers.length > 15) {
+                sliderHeader.style.fontSize = "14px";
+                sliderPercentage.style.fontSize = "12px";
+            }
 
             // AVERAGE COLOR AS BACKGROUND
 
@@ -74,6 +91,7 @@ fetch("nominees.json")
                     sliderPercentage,
                     isWhatPercentOf(answer.votes, votesTotal),
                     secondPlace / 3)
+                playSoundEffect("sounds/rise-1.mp3")
             }, 1000);
             setTimeout( () =>{
                 slideCappedTo(
@@ -82,6 +100,7 @@ fetch("nominees.json")
                     sliderPercentage,
                     isWhatPercentOf(answer.votes, votesTotal),
                     (secondPlace / 3) * 2)
+                playSoundEffect("sounds/rise-2.mp3")
             }, 3000);
             setTimeout( () =>{
                 slideTo(
@@ -90,6 +109,7 @@ fetch("nominees.json")
                     sliderPercentage,
                     isWhatPercentOf(answer.votes, votesTotal),
                     firstPlace)
+                playSoundEffect("sounds/rise-3.mp3")
             }, 5000);
         });
     });
@@ -154,4 +174,10 @@ function eliminate(slider) {
         slider.style.opacity = "50%";
         slider.style.transform = "scale(.95, .95)";}
     , 800);
+}
+
+function playSoundEffect(soundEffect) {
+    var audio = new Audio(soundEffect);
+    audio.volume = 0.15;
+    audio.play();
 }
