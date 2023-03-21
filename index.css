@@ -1,17 +1,29 @@
+/* Fonts */
+
+@font-face {
+    font-family: Offbit;
+    src:url("/fonts/Offbit.otf");
+}
 
 /* Marquee */
 
 #marquee {
-    color: #6b1e58;
+    color: #e4b83f;
     font-size: 80px;
-    font-family: 'Anybody', cursive;
+    font-family: 'Offbit';
     font-weight: 800;
     font-stretch: 150%;
     font-variation-settings: "wdth" 150;
+    white-space: nowrap;
+    animation: animate 20s linear infinite;
+    padding-left: 100%;
+    padding-top: 40px;
+    display: inline-block;
 }
 
 .marquee-background {
-    background-color: black;
+    background-color: rgb(25, 19, 34);
+    filter: drop-shadow(0px 10px 7px rgba(36, 12, 80, 0.5));
 }
 
 #outer {
@@ -19,20 +31,23 @@
     width: 100%
 }
 
-#outer div {
-    display: inline-block;
-}
-
-#loop {
-    white-space: nowrap;
-    animation: loop-anim 25s linear infinite;
-}
-
-@keyframes loop-anim {
-    0% {
-        margin-left: 0;
-    }
+@keyframes animate {
     100% {
-        margin-left: -50% /* This works because of the div between "outer" and "loop" */
+        transform: translate(-100%, 0)
     }
 }
+
+.separator {
+    color:gray
+}
+
+/* Video */
+
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+  }
+  
