@@ -1,6 +1,7 @@
 const colorThief = new ColorThief()
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
+var hasStarted = false
 
 // GENERATE RANDOM
 var random
@@ -23,7 +24,7 @@ fetch("nominees.json")
         selectedData.answers.forEach((answer, index) => {
             var video = answer.video ? `<video src='${answer.video}' class="card-video" id="video-${normalizeName(answer.name)}" />` : ``
             cards += `
-            <div class="col col-xs-8 col-lg-4 base-card" id="base-card-${normalizeName(answer.name)}">
+            <div class="col col-xs-10 col-lg-4 base-card" id="base-card-${normalizeName(answer.name)}">
                 <div class="card" id="card-${normalizeName(answer.name)}">
                     <div class="card-text">
                         <h5 class="card-owners">${answer.owners || ""}</h5>
@@ -85,8 +86,11 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.body.addEventListener('click', function() {
-    fadeIn();
-    animateScroll();
+    if (!hasStarted) {
+        fadeIn();
+        animateScroll();
+        hasStarted = true;
+    }
 });
 
 function fadeIn () {
