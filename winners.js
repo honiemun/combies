@@ -1,7 +1,7 @@
 const colorThief = new ColorThief()
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-var hasStarted = false
+let hasStarted = false
 
 var random
 fetch("nominees.json")
@@ -33,24 +33,9 @@ fetch("nominees.json")
 
         const panel = document.getElementById("chart");
         panel.innerHTML = sliders;
-        
-        // GET VOTES TOTAL
-        let votesTotal = 0;
-        let numberArray = [];
-        selectedData.answers.forEach((answer, index) => {
-            votesTotal += answer.votes;
-            numberArray.push(answer.votes)
-        });
-
-        // GET FIRST & SECOND PLACE
-        var max = Math.max.apply(null, numberArray); // get the max of the array
-        const firstPlace = isWhatPercentOf(Math.max.apply(null, numberArray), votesTotal);
-        numberArray.splice(numberArray.indexOf(max), 1); // remove max from the array
-        const secondPlace = isWhatPercentOf(Math.max.apply(null, numberArray), votesTotal); // get the 2nd max
 
         selectedData.answers.forEach((answer, index) => {
-
-            const slider = document.getElementById("slider-" + normalizeName(answer.name));
+            
             const sliderHeader = document.getElementById("slider-header-" + normalizeName(answer.name));
             const sliderProgress = document.getElementById("slider-progress-" + normalizeName(answer.name));
             const sliderPercentage = document.getElementById("slider-percentage-" + normalizeName(answer.name));
@@ -80,37 +65,6 @@ fetch("nominees.json")
                 color = colorThief.getColor(img);
                 sliderProgress.style.backgroundColor = "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
             });
-
-            // ANIMATION TEST
-            // TO-DO: MAKE THIS PRETTY
-
-            setTimeout( () =>{
-                slideCappedTo(
-                    slider,
-                    sliderProgress,
-                    sliderPercentage,
-                    isWhatPercentOf(answer.votes, votesTotal),
-                    secondPlace / 3)
-                playSoundEffect("sounds/rise-1.mp3")
-            }, 1000);
-            setTimeout( () =>{
-                slideCappedTo(
-                    slider,
-                    sliderProgress,
-                    sliderPercentage,
-                    isWhatPercentOf(answer.votes, votesTotal),
-                    (secondPlace / 3) * 2)
-                playSoundEffect("sounds/rise-2.mp3")
-            }, 3000);
-            setTimeout( () =>{
-                slideTo(
-                    slider,
-                    sliderProgress,
-                    sliderPercentage,
-                    isWhatPercentOf(answer.votes, votesTotal),
-                    firstPlace)
-                playSoundEffect("sounds/rise-3.mp3")
-            }, 5000);
         });
     });
 
@@ -180,4 +134,67 @@ function playSoundEffect(soundEffect) {
     var audio = new Audio(soundEffect);
     audio.volume = 0.15;
     audio.play();
+}
+
+document.body.addEventListener('click', function() {
+    if (!hasStarted) {
+        startAnimation();
+        hasStarted = true;
+    }
+});
+
+function startAnimation() {
+    fetch("nominees.json")
+    .then(Response => Response.json())
+    .then(data => {
+        const selectedData = fetchSelected(data)
+        selectedData.answers.forEach((answer, index) => {
+
+            const slider = document.getElementById("slider-" + normalizeName(answer.name));
+            const sliderProgress = document.getElementById("slider-progress-" + normalizeName(answer.name));
+            const sliderPercentage = document.getElementById("slider-percentage-" + normalizeName(answer.name));
+
+            // GET VOTES TOTAL
+            let votesTotal = 0;
+            let numberArray = [];
+            selectedData.answers.forEach((answer, index) => {
+                votesTotal += answer.votes;
+                numberArray.push(answer.votes)
+            });
+    
+            // GET FIRST & SECOND PLACE
+            var max = Math.max.apply(null, numberArray); // get the max of the array
+            const firstPlace = isWhatPercentOf(Math.max.apply(null, numberArray), votesTotal);
+            numberArray.splice(numberArray.indexOf(max), 1); // remove max from the array
+            const secondPlace = isWhatPercentOf(Math.max.apply(null, numberArray), votesTotal); // get the 2nd max
+            
+            setTimeout( () =>{
+                slideCappedTo(
+                    slider,
+                    sliderProgress,
+                    sliderPercentage,
+                    isWhatPercentOf(answer.votes, votesTotal),
+                    secondPlace / 3)
+                playSoundEffect("sounds/rise-1.mp3")
+            }, 1000);
+            setTimeout( () =>{
+                slideCappedTo(
+                    slider,
+                    sliderProgress,
+                    sliderPercentage,
+                    isWhatPercentOf(answer.votes, votesTotal),
+                    (secondPlace / 3) * 2)
+                playSoundEffect("sounds/rise-2.mp3")
+            }, 3000);
+            setTimeout( () =>{
+                slideTo(
+                    slider,
+                    sliderProgress,
+                    sliderPercentage,
+                    isWhatPercentOf(answer.votes, votesTotal),
+                    firstPlace)
+                playSoundEffect("sounds/rise-3.mp3")
+            }, 5000);
+        });
+    });
 }
