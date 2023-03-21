@@ -16,22 +16,27 @@
     background-color: rgb(44, 26, 61);
     position: relative;
     z-index: -5;
+    transition-duration: .5s;
+    transition-property: opacity, transform;
+    transition-timing-function: ease-in-out;
 }
 
 .slider-progress {
     border-radius: 10px;
     display: block;
     height: 100%;
-    width: 0%;
+    width: 0;
     z-index: -1;
     position: absolute;
-    transition: width 1s ease-in;
+    transition-duration: 1s;
+    transition-property: width;
+    transition-timing-function: ease-in-out;
 }
-
+  
 .slider-header {
     text-align: left;
     display: inline-block;
-    width: 90%;
+    width: 93%;
     font-family: 'Anybody', cursive;
     padding: 8px;
     padding-top: 10px;
@@ -42,7 +47,7 @@
 .slider-percentage {
     text-align: right;
     display: inline-block;
-    width: 9%;
+    padding-left: 6px;
     font-family: 'Anybody', cursive;
     font-weight: 800;
     color: rgb(235, 229, 229);

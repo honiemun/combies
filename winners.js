@@ -25,7 +25,7 @@ fetch("nominees.json")
             <div class="slider" id="slider-${normalizeName(answer.name)}">
                 <span class="slider-progress" id="slider-progress-${normalizeName(answer.name)}">.</span>
                 <h1 class="slider-header">${answer.name}</h1>
-                <h2 class="slider-percentage" id="slider-percentage-${normalizeName(answer.name)}">0.0%</h2>
+                <h2 class="slider-percentage" id="slider-percentage-${normalizeName(answer.name)}">0</h2><span class="slider-percentage">%</span>
             </div>
             `;
         });
@@ -33,9 +33,23 @@ fetch("nominees.json")
         const panel = document.getElementById("chart");
         panel.innerHTML = sliders;
         
+        // GET VOTES TOTAL
+        let votesTotal = 0;
+        let numberArray = [];
+        selectedData.answers.forEach((answer, index) => {
+            votesTotal += answer.votes;
+            numberArray.push(answer.votes)
+        });
+
+        // GET FIRST & SECOND PLACE
+        var max = Math.max.apply(null, numberArray); // get the max of the array
+        const firstPlace = isWhatPercentOf(Math.max.apply(null, numberArray), votesTotal);
+        numberArray.splice(numberArray.indexOf(max), 1); // remove max from the array
+        const secondPlace = isWhatPercentOf(Math.max.apply(null, numberArray), votesTotal); // get the 2nd max
 
         selectedData.answers.forEach((answer, index) => {
 
+            const slider = document.getElementById("slider-" + normalizeName(answer.name));
             const sliderProgress = document.getElementById("slider-progress-" + normalizeName(answer.name));
             const sliderPercentage = document.getElementById("slider-percentage-" + normalizeName(answer.name));
 
@@ -51,11 +65,32 @@ fetch("nominees.json")
             });
 
             // ANIMATION TEST
+            // TO-DO: MAKE THIS PRETTY
 
-            const validNumber = randomIntFromInterval(0, 100) //delete
-            
-            sliderProgress.style.width = validNumber + "%"
-            sliderPercentage.innerHTML = validNumber + "%"
+            setTimeout( () =>{
+                slideCappedTo(
+                    slider,
+                    sliderProgress,
+                    sliderPercentage,
+                    isWhatPercentOf(answer.votes, votesTotal),
+                    secondPlace / 3)
+            }, 1000);
+            setTimeout( () =>{
+                slideCappedTo(
+                    slider,
+                    sliderProgress,
+                    sliderPercentage,
+                    isWhatPercentOf(answer.votes, votesTotal),
+                    (secondPlace / 3) * 2)
+            }, 3000);
+            setTimeout( () =>{
+                slideTo(
+                    slider,
+                    sliderProgress,
+                    sliderPercentage,
+                    isWhatPercentOf(answer.votes, votesTotal),
+                    firstPlace)
+            }, 5000);
         });
     });
 
@@ -65,7 +100,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function fadeIn () {
-    console.log("hi!")
     document.getElementById("overlay-black").style.animation = "fadeIn 0.5s ease-in forwards";
 }
 
@@ -82,4 +116,42 @@ function normalizeName (name) {
 
 function fetchSelected (data) {
     return urlParams.get("slide") ? data.find(el => el.code === urlParams.get("slide")) : data[random]
+}
+
+function isWhatPercentOf(x, y) {
+    return (x / y) * 100;
+}
+
+function slideTo (slider, progress, number, percentage, firstPlace = false) {
+    progress.style.width = percentage + "%"
+    animateNumber(number, parseInt(number.innerHTML), percentage, 500);
+
+    console.log(firstPlace)
+    if (firstPlace && percentage < firstPlace) eliminate(slider)
+}
+
+function slideCappedTo (slider, progress, number, percentage, cap) {
+    const cappedPercentage = percentage <= cap ? percentage : cap
+    if (percentage <= cap) eliminate(slider)
+    slideTo(slider, progress, number, cappedPercentage)
+}
+
+function animateNumber(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      obj.innerHTML = Math.floor(progress * (end - start) + start);
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+}
+
+function eliminate(slider) {
+    setTimeout( () =>{
+        slider.style.opacity = "50%";
+        slider.style.transform = "scale(.95, .95)";}
+    , 800);
 }
