@@ -1,0 +1,38 @@
+
+/* Marquee */
+
+#marquee {
+    color: #6b1e58;
+    font-size: 80px;
+    font-family: 'Anybody', cursive;
+    font-weight: 800;
+    font-stretch: 150%;
+    font-variation-settings: "wdth" 150;
+}
+
+.marquee-background {
+    background-color: black;
+}
+
+#outer {
+    overflow: hidden;
+    width: 100%
+}
+
+#outer div {
+    display: inline-block;
+}
+
+#loop {
+    white-space: nowrap;
+    animation: loop-anim 25s linear infinite;
+}
+
+@keyframes loop-anim {
+    0% {
+        margin-left: 0;
+    }
+    100% {
+        margin-left: -50% /* This works because of the div between "outer" and "loop" */
+    }
+}
