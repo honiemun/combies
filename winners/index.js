@@ -4,7 +4,7 @@ const urlParams = new URLSearchParams(queryString);
 let hasStarted = false
 
 var random
-fetch("nominees.json")
+fetch("../json/nominees.json")
     .then(Response => Response.json())
     .then(data => {
         // GENERATE RANDOM
@@ -12,7 +12,7 @@ fetch("nominees.json")
     }
 )
 
-fetch("nominees.json")
+fetch("../json/nominees.json")
     .then(Response => Response.json())
     .then(data => {
         var selectedData = fetchSelected(data)
@@ -144,7 +144,7 @@ document.body.addEventListener('click', function() {
 });
 
 function startAnimation() {
-    fetch("nominees.json")
+    fetch("../json/nominees.json")
     .then(Response => Response.json())
     .then(data => {
         const selectedData = fetchSelected(data)
@@ -175,7 +175,7 @@ function startAnimation() {
                     sliderPercentage,
                     isWhatPercentOf(answer.votes, votesTotal),
                     secondPlace / 3)
-                playSoundEffect("sounds/rise-1.mp3")
+                playSoundEffect("../sounds/rise-1.mp3")
             }, 1000);
             setTimeout( () =>{
                 slideCappedTo(
@@ -184,7 +184,7 @@ function startAnimation() {
                     sliderPercentage,
                     isWhatPercentOf(answer.votes, votesTotal),
                     (secondPlace / 3) * 2)
-                playSoundEffect("sounds/rise-2.mp3")
+                playSoundEffect("../sounds/rise-2.mp3")
             }, 3000);
             setTimeout( () =>{
                 slideTo(
@@ -193,7 +193,7 @@ function startAnimation() {
                     sliderPercentage,
                     isWhatPercentOf(answer.votes, votesTotal),
                     firstPlace)
-                playSoundEffect("sounds/rise-3.mp3")
+                playSoundEffect("../sounds/rise-3.mp3")
             }, 5000);
         });
     });

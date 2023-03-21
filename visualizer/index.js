@@ -5,16 +5,17 @@ var hasStarted = false
 
 // GENERATE RANDOM
 var random
-fetch("nominees.json")
+fetch("../json/nominees.json")
     .then(Response => Response.json())
     .then(data => {
         random = randomIntFromInterval(0, data.length - 1)
     }
 )
 
-fetch("nominees.json")
+fetch("../json/nominees.json")
     .then(Response => Response.json())
     .then(data => {
+        console.log(data);
         var selectedData = fetchSelected(data)
 
         document.getElementById("content").textContent = selectedData.name;
@@ -98,7 +99,7 @@ function fadeIn () {
 }
 
 function animateScroll () {
-    fetch("nominees.json")
+    fetch("../json/nominees.json")
         .then(Response => Response.json())
         .then(data => {
             var selectedData = fetchSelected(data)
@@ -134,7 +135,7 @@ function animateScroll () {
                         setTimeout(() => {
                             document.getElementById("overlay-black").style.animation = "fadeOut 0.5s ease-out forwards";
                             setTimeout(() => {
-                                window.location.href = "winners.html?slide=" + selectedData.code;
+                                window.location.href = "../winners?slide=" + selectedData.code;
                             }, 500);
                         }, 4000);
                     }
