@@ -26,7 +26,7 @@ fetch("../json/nominees.json")
             <div class="slider" id="slider-${normalizeName(answer.name)}">
                 <span class="slider-progress" id="slider-progress-${normalizeName(answer.name)}">.</span>
                 <h1 class="slider-header" id="slider-header-${normalizeName(answer.name)}">${answer.name}</h1>
-                <h2 class="slider-percentage" id="slider-percentage-${normalizeName(answer.name)}">0</h2><span class="slider-percentage">%</span>
+                <h2 class="slider-percentage" id="slider-percentage-${normalizeName(answer.name)}">0</h2><span class="slider-percentage" id="slider-percentage">%</span>
             </div>
             `;
         });
@@ -35,24 +35,45 @@ fetch("../json/nominees.json")
         panel.innerHTML = sliders;
 
         selectedData.answers.forEach((answer, index) => {
-            
+
+            const slider = document.getElementById("slider-" + normalizeName(answer.name));
             const sliderHeader = document.getElementById("slider-header-" + normalizeName(answer.name));
             const sliderProgress = document.getElementById("slider-progress-" + normalizeName(answer.name));
             const sliderPercentage = document.getElementById("slider-percentage-" + normalizeName(answer.name));
+            const sliderPercents = document.getElementsByClassName("slider-percentage");
 
             // RESIZE DEPENDING ON AMOUNT OF ITEMS
             
             if (selectedData.answers.length > 8) {
                 sliderHeader.style.fontSize = "22px";
                 sliderPercentage.style.fontSize = "18px";
+                console.log(sliderPercents)
+                Array.from(sliderPercents).forEach(percent => {
+                    percent.style.fontSize = "18px";
+                });
             }
             if (selectedData.answers.length > 12) {
                 sliderHeader.style.fontSize = "18px";
                 sliderPercentage.style.fontSize = "14px";
+                Array.from(sliderPercents).forEach(percent => {
+                    percent.style.fontSize = "14px";
+                });
             }
             if (selectedData.answers.length > 15) {
                 sliderHeader.style.fontSize = "14px";
                 sliderPercentage.style.fontSize = "12px";
+                Array.from(sliderPercents).forEach(percent => {
+                    percent.style.fontSize = "12px";
+                });
+            }
+            if (selectedData.answers.length > 20) {
+                slider.style.height = "22px";
+                slider.style.marginTop = "8px";
+                sliderHeader.style.fontSize = "12px";
+                sliderPercentage.style.fontSize = "10px";
+                Array.from(sliderPercents).forEach(percent => {
+                    percent.style.fontSize = "10px";
+                });
             }
 
             // AVERAGE COLOR AS BACKGROUND
