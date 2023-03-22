@@ -2,6 +2,7 @@ const colorThief = new ColorThief()
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var hasStarted = false
+const cardTimeout = urlParams.get("timeout") ? parseInt(urlParams.get("timeout") * 1000) : 4000
 
 // GENERATE RANDOM
 var random
@@ -24,6 +25,7 @@ fetch("../json/nominees.json")
         var cards = '';
         selectedData.answers.forEach((answer, index) => {
             var video = answer.video ? `<video src='${answer.video}' class="card-video" id="video-${normalizeName(answer.name)}" />` : ``
+            var description = answer.description ? `<div class="card-desc"><p class="card-desc-text">${answer.description}</p></div>` : ``
             cards += `
             <div class="col col-xs-10 col-lg-4 base-card" id="base-card-${normalizeName(answer.name)}">
                 <div class="card" id="card-${normalizeName(answer.name)}">
@@ -35,6 +37,7 @@ fetch("../json/nominees.json")
                         <img src="${answer.image}" class="card-image" id="image-${normalizeName(answer.name)}">
                         ${video}
                     </div>
+                    ${description}
                 </div>
             </div>
             `;
@@ -125,6 +128,7 @@ function animateScroll () {
                         image.classList.add("vanish");
                         video.classList.add("unvanish");
                         video.play();
+                        console.log(video.duration * 1000);
                     } else {
                         cardScroll.scrollLeft += currentCard.clientWidth;
                     }
@@ -137,11 +141,12 @@ function animateScroll () {
                             setTimeout(() => {
                                 window.location.href = "../winners?slide=" + selectedData.code;
                             }, 500);
-                        }, 4000);
+                        }, cardTimeout);
                     }
                 }, timeout);
                 
-                timeout += 4000
+                const video = document.getElementById("video-" + normalizeName(answer.name));
+                timeout += answer.video ? (video.duration * 1000) : cardTimeout
             });
         });
 }
