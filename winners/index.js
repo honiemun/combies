@@ -1,7 +1,9 @@
 const colorThief = new ColorThief()
+const jsConfetti = new JSConfetti()
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 let hasStarted = false
+let isWinnerScreen = false
 
 var random
 fetch("../json/nominees.json")
@@ -160,6 +162,8 @@ function playSoundEffect(soundEffect) {
 
 function displayWinnersScreen(category) {
 
+    isWinnerScreen = true
+
     // GET FIRST PLACE WINNERS
     let firstPlaceWinners = [{ "votes": 0 }]
     let firstPlaceNames = []
@@ -174,6 +178,7 @@ function displayWinnersScreen(category) {
     });
 
     const winner = document.getElementById("winner");
+    //const winnerCanvas = document.getElementById("winnerCanvas");
     const winnerText = document.getElementById("winnerText");
     const winnerWrapper = document.getElementById("winnerWrapper");
     const winnerHeader = document.getElementById("winnerHeader");
@@ -182,6 +187,7 @@ function displayWinnersScreen(category) {
     winnerHeader.innerHTML = firstPlaceNames.join(", ")
     winner.style.opacity = 1;
     setTimeout( () =>{
+        jsConfetti.addConfetti();
         window.requestAnimationFrame(function(){
             winnerWrapper.style.animation = "skewWinner .8s ease-in-out forwards;"
         });
@@ -203,7 +209,26 @@ document.body.addEventListener('click', function() {
         startAnimation();
         hasStarted = true;
     }
+    if (isWinnerScreen) {
+        jsConfetti.addConfetti()
+    }
 });
+
+const client = new tmi.Client({
+    connection: {
+        secure: true,
+        reconnect: true,
+    },
+    channels: ['honiemun'],
+})
+
+client.connect();
+
+client.on('message', (channel, tags, message, self) => {
+    jsConfetti.addConfetti({
+        emojis: ['🏆', '🏆', '🌈', '💥', '✨', '💫', '🌸', '🏅'],
+     })
+})
 
 function startAnimation() {
     fetch("../json/nominees.json")

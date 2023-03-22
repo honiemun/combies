@@ -154,6 +154,16 @@ body {
     transform: translateY(-50%);
 }
 
+.winnerConfetti {
+    font-family: 'Anybody', cursive;
+    color: rgb(216, 116, 211);
+    font-size: 2vw;
+    text-shadow: 2px 2px 0px black;
+    position: absolute;
+    bottom: 10%;
+    padding-left: 15%;
+}
+
 @keyframes skewWinner { 
     0% { transform: translateY(-50%) skew(0) rotateZ(0); } 
     40%  { transform: translateY(-50%) skew(-9deg) rotateZ(-1deg); } 

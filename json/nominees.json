@@ -752,5 +752,26 @@
                 "image": "https://cdn.discordapp.com/avatars/265732760432279553/31878d8fcbeacc325831bd76b1f78a96.png?size=512"
             }
         ]
+    },
+    {
+        "name": "SERVER FUNNYPERSON OF THE YEAR ",
+        "code": "server-funnyperson",
+        "answers": [
+            {
+                "name": "Marcy",
+                "votes": 12,
+                "image": "https://cdn.discordapp.com/avatars/265732760432279553/31878d8fcbeacc325831bd76b1f78a96.png?size=512"
+            },
+            {
+                "name": "Akko",
+                "votes": 7,
+                "image": "https://cdn.discordapp.com/avatars/1005820054044160010/c0fcd8adb079f35790cc0e37963682fd.png?size=512"
+            },
+            {
+                "name": "Hookie",
+                "votes": 7,
+                "image": "https://cdn.discordapp.com/avatars/325439065350471717/51bae24f272f949a579c16be5f53f2a9.png?size=512"
+            }
+        ]
     }
 ]
